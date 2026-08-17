@@ -2,7 +2,7 @@
    CONFIG — the only two lines you need to edit
    (API key lives server-side in your Cloudflare function)
    ============================================================ */
-const PLAYLIST_ID = "UUpZy_t0WYVlm32-NojxVACQ";    // channel ID with UC swapped for UU
+const PLAYLIST_ID = "UCRAuV8XqQM0MD3VK_Pi32AA";    // channel ID with UC swapped for UU
 const MAX_RESULTS = 12;                            // how many videos to show
 /* ============================================================ */
 
