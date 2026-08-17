@@ -1,0 +1,180 @@
+  /* ============================================================
+     SFU brand tokens
+     Source: sfu.ca/communicators-toolkit/brand/guidelines/colours.html
+             sfu.ca/communicators-toolkit/brand/guidelines/typography.html
+     Standard fonts (Countach/November/Lava) are individually licensed
+     and not available for embedding here — using Arial, SFU's own
+     documented fallback for when standard fonts aren't available.
+     ============================================================ */
+  :root{
+    --bg: #FFFFFF;
+    --card: #FFFFFF;
+    --border: #E1E1E1;
+    --ink: #000000;              /* SFU: black, use for body copy */
+    --ink-soft: #414042;         /* SFU dark grey: subheads, graphic elements */
+    --accent: #CC0633;           /* SFU light red: primary, dominant colour */
+    --accent-dark: #A6192E;      /* SFU dark red: secondary, tone-on-tone pairing */
+    --accent-soft: #FBE9EC;      /* light tint of SFU red for hover/active fills */
+    --radius: 4px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:28px 24px 48px;
+  }
+
+  .wrap{max-width:1100px;margin:0 auto;}
+
+  header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:20px;
+    border-bottom:3px solid var(--accent);
+    padding-bottom:14px;
+  }
+  h1{
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:700;
+    font-size:26px;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    color:var(--ink-soft);
+    margin:0;
+    line-height:0.86; /* SFU headline linespacing: 86% of font size */
+  }
+  .count{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .player-shell{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    background:#0d0d10;
+    border-radius:var(--radius);
+    overflow:hidden;
+    margin-bottom:28px;
+    box-shadow:0 1px 2px rgba(0,0,0,0.08);
+  }
+  .player-shell iframe{
+    position:absolute; inset:0; width:100%; height:100%; border:0;
+  }
+  .now-playing-label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--accent-dark);
+    margin:0 0 10px;
+    line-height:1.2; /* SFU subhead linespacing: 120% of font size */
+  }
+  .now-playing-label .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--accent-dark);
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;} 50%{opacity:0.35;}
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(240px,1fr));
+    gap:16px;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    cursor:pointer;
+    text-align:left;
+    padding:0;
+    font-family:inherit;
+    color:inherit;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .card:hover, .card:focus-visible{
+    transform:translateY(-2px);
+    border-color:var(--accent);
+    box-shadow:0 8px 20px rgba(204,6,51,0.14);
+    outline:none;
+  }
+  .card.active{
+    border-color:var(--accent-dark);
+    background:var(--accent-soft);
+  }
+
+  .thumb-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    background:#eee;
+  }
+  .thumb-wrap img{
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+  .index-badge{
+    position:absolute;
+    top:8px; left:8px;
+    background:var(--accent);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    padding:3px 7px;
+    border-radius:3px;
+    font-variant-numeric: tabular-nums;
+  }
+  .play-glyph{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0;
+    transition:opacity .15s ease;
+    background:rgba(15,15,18,0.25);
+  }
+  .card:hover .play-glyph, .card:focus-visible .play-glyph{opacity:1;}
+  .play-glyph svg{width:36px;height:36px;}
+
+  .meta{padding:12px 14px 14px;}
+  .title{
+    font-size:14px;
+    font-weight:400;
+    line-height:1.5; /* SFU body linespacing: 150% of font size */
+    color:var(--ink);
+    margin:0 0 6px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .date{
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+
+  .status{
+    padding:40px 20px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+  .status.error{color:var(--accent-dark);}
+
+  @media (prefers-reduced-motion: reduce){
+    .card, .play-glyph, .dot{transition:none; animation:none;}
+  }
