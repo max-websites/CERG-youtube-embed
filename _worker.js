@@ -36,7 +36,7 @@ async function handleVideos(request, env) {
     return json({ error: "Missing playlist_id parameter." }, 400);
   }
 
-  const maxResults = params.get("max_results") || "12";
+  const maxResults = params.get("max_results") || "4";
 
   try {
     const ytUrl = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=" + maxResults + "&playlistId=" + playlistId + "&key=" + apiKey;

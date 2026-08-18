@@ -3,7 +3,7 @@
    (API key lives server-side in your Cloudflare function)
    ============================================================ */
 const PLAYLIST_ID = "UURAuV8XqQM0MD3VK_Pi32AA";    // channel ID with UC swapped for UU
-const MAX_RESULTS = 12;                            // how many videos to show
+const MAX_RESULTS = 4;                            // how many videos to show
 /* ============================================================ */
 
 const grid = document.getElementById('grid');
