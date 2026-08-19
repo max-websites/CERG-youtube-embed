@@ -12,13 +12,22 @@
    ============================================================ */
 
 let scheduled = false;
+let lastHeight = null;
 
 function reportHeight() {
   if (scheduled) return;
   scheduled = true;
   requestAnimationFrame(() => {
     scheduled = false;
-    const height = Math.ceil(document.documentElement.scrollHeight);
+    const height = Math.ceil(document.documentElement.scrollHeight) + 30; // fudge factor to avoid scrollbars on some browsers
+
+    // Skip redundant messages — also closes off a theoretical loop,
+    // since the parent setting iframe.style.height fires a resize
+    // event in here too. If height genuinely hasn't changed, there's
+    // nothing to report.
+    if (height === lastHeight) return;
+    lastHeight = height;
+
     // '*' because this page may be embedded from author, staging,
     // or production AEM — we're only ever sending a plain number,
     // so an open target origin here is low-risk. The parent-side
