@@ -43,7 +43,6 @@ async function init() {
       card.innerHTML = `
         <div class="thumb-wrap" role="button" tabindex="0" aria-label="Play ${escapeHtml(s.title)}">
           <img src="${thumb}" alt="" loading="lazy">
-          <span class="index-badge">${String(i + 1).padStart(2, '0')}</span>
           <span class="play-glyph">
             <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
           </span>

@@ -190,7 +190,7 @@
   .date{
     font-size:1.7rem;
     color:var(--ink-soft);
-    margin-bottom: 0;
+    margin: 0;
   }
 
   .status{
