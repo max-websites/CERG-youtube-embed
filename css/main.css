@@ -53,6 +53,7 @@
     font-weight:720;
     font-size:2.5rem;
     line-height: 2.9rem;
+    font-stretch: 82%;
     color:var(--ink-soft);
     margin:0;
   }
@@ -61,6 +62,7 @@
     font-weight:720;
     font-size:2.5rem;
     line-height: 2.9rem;
+    font-stretch: 82%;
     color:var(--ink-soft);
     margin:0;
   }
@@ -132,7 +134,7 @@
     transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
   }
   .card:hover, .card:focus-visible{
-    transform:translateY(-2px);
+    /* transform:translateY(-2px); */
     border-color:var(--accent);
     /* box-shadow:0 8px 20px rgba(204,6,51,0.14); */
     outline:none;
@@ -181,13 +183,14 @@
   .meta{
     padding:12px 14px 14px;
     display: flex;
-    flex-flow: row;
+    flex-flow: column;
     row-gap: 1rem;
   }
 
   .date{
     font-size:1.7rem;
     color:var(--ink-soft);
+    margin-bottom: 0;
   }
 
   .status{
