@@ -19,7 +19,24 @@ function reportHeight() {
   scheduled = true;
   requestAnimationFrame(() => {
     scheduled = false;
-    const height = Math.ceil(document.documentElement.scrollHeight) + 30; // fudge factor to avoid scrollbars on some browsers
+
+    // Deliberately NOT document.documentElement.scrollHeight — per
+    // spec, the root <html> element's scrollHeight is defined as
+    // max(content height, viewport height). Once the iframe's own
+    // height is set even slightly taller than the content (e.g. by
+    // a fudge factor), scrollHeight starts reflecting that inflated
+    // viewport height instead of true content height, and each
+    // resize cycle compounds it — a slow runaway feedback loop.
+    // Measuring a real element's box sidesteps this entirely, since
+    // an element's rendered height has no dependency on the iframe's
+    // own externally-set height.
+    const wrap = document.querySelector('.wrap') || document.body;
+    const bodyStyle = getComputedStyle(document.body);
+    const height = Math.ceil(
+      wrap.getBoundingClientRect().height +
+      parseFloat(bodyStyle.paddingTop) +
+      parseFloat(bodyStyle.paddingBottom)
+    );
 
     // Skip redundant messages — also closes off a theoretical loop,
     // since the parent setting iframe.style.height fires a resize
