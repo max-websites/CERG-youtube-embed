@@ -3,8 +3,8 @@
      Source: sfu.ca/communicators-toolkit/brand/guidelines/colours.html
              sfu.ca/communicators-toolkit/brand/guidelines/typography.html
      Standard fonts (Countach/November/Lava) are individually licensed
-     and not available for embedding here — using Arial, SFU's own
-     documented fallback for when standard fonts aren't available.
+     and not available for embedding here — using Archivo (variable,
+     wdth 82 / wght 720) as a close free match, Arial as final fallback.
      ============================================================ */
   :root{
     --bg: #FFFFFF;
@@ -94,6 +94,15 @@
     gap:16px;
   }
 
+  /* Fixed 3-column variant — for pages that always show exactly 3 items
+     (latest-videos-styled.html). Falls back to 1 column on narrow screens. */
+  .grid-3{
+    grid-template-columns:repeat(3, 1fr);
+  }
+  @media (max-width:720px){
+    .grid-3{ grid-template-columns:1fr; }
+  }
+
   .card{
     background:var(--card);
     border:1px solid var(--border);
@@ -122,9 +131,14 @@
     width:100%;
     aspect-ratio:16/9;
     background:#eee;
+    cursor:pointer;
   }
   .thumb-wrap img{
     width:100%;height:100%;object-fit:cover;display:block;
+  }
+  /* When a thumbnail is swapped for a live embed (latest-videos-styled.js) */
+  .thumb-wrap iframe{
+    position:absolute; inset:0; width:100%; height:100%; border:0;
   }
   .index-badge{
     position:absolute;
@@ -172,6 +186,34 @@
     font-size:14px;
   }
   .status.error{color:var(--accent-dark);}
+
+  /* ============================================================
+     Trio grid — used by latest-videos.html (plain native embeds).
+     3 columns desktop, 1 column mobile. Each item is a bare iframe
+     plus a title/date caption — no card chrome.
+     ============================================================ */
+  .trio-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  @media (max-width:720px){
+    .trio-grid{ grid-template-columns:1fr; }
+  }
+
+  .video-item .frame-shell{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:#0d0d10;
+    margin-bottom:10px;
+  }
+  .video-item .frame-shell iframe{
+    position:absolute; inset:0; width:100%; height:100%; border:0;
+  }
+  .video-item .title{ margin-top:0; }
 
   @media (prefers-reduced-motion: reduce){
     .card, .play-glyph, .dot{transition:none; animation:none;}
