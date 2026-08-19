@@ -49,7 +49,7 @@ async function init() {
           </span>
         </div>
         <div class="meta">
-          <p class="title">${escapeHtml(s.title)}</p>
+          <h3 class="title">${escapeHtml(s.title)}</h3>
           <p class="date">${fmtDate(s.publishedAt)}</p>
         </div>
       `;
