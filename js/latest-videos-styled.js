@@ -1,6 +1,11 @@
-import { getFeedConfig, fetchVideos, fmtDate, escapeHtml } from './feed.js';
+import {
+  getFeedConfig, fetchVideos,
+  getRequestedVideoIds, fetchVideosByIds,
+  fmtDate, escapeHtml,
+} from './feed.js';
 
-// Used only if the URL doesn't specify ?playlist=/?max=
+// Used only when no ?videos= param is present and the URL doesn't
+// specify ?playlist=/?max= either.
 const DEFAULTS = {
   playlistId: 'UURAuV8XqQM0MD3VK_Pi32AA',
   maxResults: 3,
@@ -20,48 +25,56 @@ function embedIframe(thumbWrap, videoId, title) {
   `;
 }
 
-async function init() {
-  const config = getFeedConfig(DEFAULTS);
+function renderCard(item) {
+  const s = item.snippet;
+  const videoId = s.resourceId.videoId;
+  const thumb = s.thumbnails?.medium?.url || s.thumbnails?.default?.url;
 
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="thumb-wrap" role="button" tabindex="0" aria-label="Play ${escapeHtml(s.title)}">
+      <img src="${thumb}" alt="" loading="lazy">
+      <span class="play-glyph">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+      </span>
+    </div>
+    <div class="meta">
+      <h3 class="title">${escapeHtml(s.title)}</h3>
+      <p class="date">${fmtDate(s.publishedAt)}</p>
+    </div>
+  `;
+
+  const thumbWrap = card.querySelector('.thumb-wrap');
+  const play = () => embedIframe(thumbWrap, videoId, s.title);
+  thumbWrap.addEventListener('click', play, { once: true });
+  thumbWrap.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(); }
+  }, { once: true });
+
+  return card;
+}
+
+async function init() {
   try {
-    const items = await fetchVideos(config);
+    // ?videos=... (comma-separated) always wins over playlist mode when
+    // present. Examples:
+    //   latest-videos-styled.html?videos=https://youtu.be/dQw4w9WgXcQ
+    //   latest-videos-styled.html?videos=https://youtu.be/aaa,https://youtu.be/bbb,dQw4w9WgXcQ
+    const requestedIds = getRequestedVideoIds();
+
+    const items = requestedIds.length > 0
+      ? await fetchVideosByIds(requestedIds)
+      : await fetchVideos(getFeedConfig(DEFAULTS));
 
     if (items.length === 0) {
-      grid.innerHTML = '<p class="status">No videos found for this playlist.</p>';
+      grid.innerHTML = '<p class="status">No videos found.</p>';
       return;
     }
 
     grid.innerHTML = '';
+    items.forEach(item => grid.appendChild(renderCard(item)));
 
-    items.forEach((item, i) => {
-      const s = item.snippet;
-      const videoId = s.resourceId.videoId;
-      const thumb = s.thumbnails?.medium?.url || s.thumbnails?.default?.url;
-
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="thumb-wrap" role="button" tabindex="0" aria-label="Play ${escapeHtml(s.title)}">
-          <img src="${thumb}" alt="" loading="lazy">
-          <span class="play-glyph">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-          </span>
-        </div>
-        <div class="meta">
-          <h3 class="title">${escapeHtml(s.title)}</h3>
-          <p class="date">${fmtDate(s.publishedAt)}</p>
-        </div>
-      `;
-
-      const thumbWrap = card.querySelector('.thumb-wrap');
-      const play = () => embedIframe(thumbWrap, videoId, s.title);
-      thumbWrap.addEventListener('click', play, { once: true });
-      thumbWrap.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(); }
-      }, { once: true });
-
-      grid.appendChild(card);
-    });
   } catch (err) {
     grid.innerHTML = `<p class="status error">${escapeHtml(err.message || 'Something went wrong loading the video list.')}</p>`;
   }

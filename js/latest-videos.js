@@ -1,6 +1,11 @@
-import { getFeedConfig, fetchVideos, fmtDate, escapeHtml } from './feed.js';
+import {
+  getFeedConfig, fetchVideos,
+  getRequestedVideoIds, fetchVideosByIds,
+  fmtDate, escapeHtml,
+} from './feed.js';
 
-// Used only if the URL doesn't specify ?playlist=/?max=
+// Used only when no ?video= params are present and the URL doesn't
+// specify ?playlist=/?max= either.
 const DEFAULTS = {
   playlistId: 'UURAuV8XqQM0MD3VK_Pi32AA',
   maxResults: 3,
@@ -8,40 +13,48 @@ const DEFAULTS = {
 
 const grid = document.getElementById('grid');
 
-async function init() {
-  const config = getFeedConfig(DEFAULTS);
+function renderVideo(item) {
+  const s = item.snippet;
+  const videoId = s.resourceId.videoId;
 
+  const el = document.createElement('div');
+  el.className = 'video-item';
+  el.innerHTML = `
+    <div class="frame-shell">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/${videoId}?rel=0"
+        title="${escapeHtml(s.title)}"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <h3 class="title">${escapeHtml(s.title)}</h3>
+    <p class="date">${fmtDate(s.publishedAt)}</p>
+  `;
+  return el;
+}
+
+async function init() {
   try {
-    const items = await fetchVideos(config);
+    // ?videos=... (comma-separated) always wins over playlist mode when
+    // present. Examples:
+    //   latest-videos.html?videos=https://youtu.be/dQw4w9WgXcQ
+    //   latest-videos.html?videos=https://youtu.be/aaa,https://youtu.be/bbb,dQw4w9WgXcQ
+    const requestedIds = getRequestedVideoIds();
+
+    const items = requestedIds.length > 0
+      ? await fetchVideosByIds(requestedIds)
+      : await fetchVideos(getFeedConfig(DEFAULTS));
 
     if (items.length === 0) {
-      grid.innerHTML = '<p class="status">No videos found for this playlist.</p>';
+      grid.innerHTML = '<p class="status">No videos found.</p>';
       return;
     }
 
     grid.innerHTML = '';
+    items.forEach(item => grid.appendChild(renderVideo(item)));
 
-    items.forEach((item) => {
-      const s = item.snippet;
-      const videoId = s.resourceId.videoId;
-
-      const el = document.createElement('div');
-      el.className = 'video-item';
-      el.innerHTML = `
-        <div class="frame-shell">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/${videoId}?rel=0"
-            title="${escapeHtml(s.title)}"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen>
-          </iframe>
-        </div>
-        <h3 class="title">${escapeHtml(s.title)}</h3>
-        <p class="date">${fmtDate(s.publishedAt)}</p>
-      `;
-      grid.appendChild(el);
-    });
   } catch (err) {
     grid.innerHTML = `<p class="status error">${escapeHtml(err.message || 'Something went wrong loading the video list.')}</p>`;
   }
