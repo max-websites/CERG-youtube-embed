@@ -73,6 +73,7 @@
      (see iframe.js) / ?titleStyle=bold. */
   .title-bold{
     font-weight:690;
+    font-stretch: 100%;
   }
 
   .count{
@@ -248,4 +249,5 @@
   h1, h2, h3, h4, h5, h6, p {
     transform: scaleX(96%);
     transform-origin: left;
+    margin:0;
   }
