@@ -107,6 +107,24 @@ export function fmtDate(iso) {
   return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
+/** Reads ?titleStyle= from the URL. 'regular' renders titles as a bolded
+ *  paragraph matching body-text styling instead of the default h3
+ *  heading — useful when the h3 heading scale doesn't fit a given
+ *  embed. Anything else (including missing) falls back to 'heading'. */
+export function getTitleStyle() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('titleStyle') === 'regular' ? 'regular' : 'heading';
+}
+
+/** Renders a video title as either an h3 heading (default) or a
+ *  bolded body-style paragraph, per getTitleStyle(). title should
+ *  already be HTML-escaped by the caller. */
+export function titleMarkup(title, style) {
+  return style === 'regular'
+    ? `<p class="title-bold">${title}</p>`
+    : `<h3 class="title">${title}</h3>`;
+}
+
 /** Minimal HTML-escaping for titles interpolated into innerHTML. */
 export function escapeHtml(str = '') {
   return str.replace(/[&<>"']/g, (c) => ({

@@ -1,6 +1,7 @@
 import {
   getFeedConfig, fetchVideos,
   getRequestedVideoIds, fetchVideosByIds,
+  getTitleStyle, titleMarkup,
   fmtDate, escapeHtml,
 } from './feed.js';
 
@@ -25,7 +26,7 @@ function embedIframe(thumbWrap, videoId, title) {
   `;
 }
 
-function renderCard(item) {
+function renderCard(item, titleStyle) {
   const s = item.snippet;
   const videoId = s.resourceId.videoId;
   const thumb = s.thumbnails?.medium?.url || s.thumbnails?.default?.url;
@@ -40,7 +41,7 @@ function renderCard(item) {
       </span>
     </div>
     <div class="meta">
-      <h3 class="title">${escapeHtml(s.title)}</h3>
+      ${titleMarkup(escapeHtml(s.title), titleStyle)}
       <p class="date">${fmtDate(s.publishedAt)}</p>
     </div>
   `;
@@ -73,7 +74,8 @@ async function init() {
     }
 
     grid.innerHTML = '';
-    items.forEach(item => grid.appendChild(renderCard(item)));
+    const titleStyle = getTitleStyle();
+    items.forEach(item => grid.appendChild(renderCard(item, titleStyle)));
 
   } catch (err) {
     grid.innerHTML = `<p class="status error">${escapeHtml(err.message || 'Something went wrong loading the video list.')}</p>`;

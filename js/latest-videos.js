@@ -1,6 +1,7 @@
 import {
   getFeedConfig, fetchVideos,
   getRequestedVideoIds, fetchVideosByIds,
+  getTitleStyle, titleMarkup,
   fmtDate, escapeHtml,
 } from './feed.js';
 
@@ -13,7 +14,7 @@ const DEFAULTS = {
 
 const grid = document.getElementById('grid');
 
-function renderVideo(item) {
+function renderVideo(item, titleStyle) {
   const s = item.snippet;
   const videoId = s.resourceId.videoId;
 
@@ -29,7 +30,7 @@ function renderVideo(item) {
         allowfullscreen>
       </iframe>
     </div>
-    <h3 class="title">${escapeHtml(s.title)}</h3>
+    ${titleMarkup(escapeHtml(s.title), titleStyle)}
     <p class="date">${fmtDate(s.publishedAt)}</p>
   `;
   return el;
@@ -53,7 +54,8 @@ async function init() {
     }
 
     grid.innerHTML = '';
-    items.forEach(item => grid.appendChild(renderVideo(item)));
+    const titleStyle = getTitleStyle();
+    items.forEach(item => grid.appendChild(renderVideo(item, titleStyle)));
 
   } catch (err) {
     grid.innerHTML = `<p class="status error">${escapeHtml(err.message || 'Something went wrong loading the video list.')}</p>`;

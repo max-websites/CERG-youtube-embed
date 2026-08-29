@@ -13,13 +13,19 @@
     --ink: #000000;              /* SFU: black, use for body copy */
     --ink-soft: #414042;         /* SFU dark grey: subheads, graphic elements */
     --accent: #CC0633;           /* SFU light red: primary, dominant colour */
-    --accent-dark: #a6192e;      /* SFU dark red: secondary, tone-on-tone pairing */
-    --accent-soft: #f5f5f5;      /* light tint of SFU red for hover/active fills */
-    --radius: 0px;
+    --accent-dark: #A6192E;      /* SFU dark red: secondary, tone-on-tone pairing */
+    --accent-soft: #FBE9EC;      /* light tint of SFU red for hover/active fills */
+    --radius: 0;                 /* SFU doesn't use rounded corners — square throughout */
   }
 
-  html {
-    font-size: 10px; /* 1rem = 10px, 10px = 1rem */
+  html{
+    /* 1rem = 10px for easy mental math (1.4rem = 14px, etc.), but as a
+       PERCENTAGE rather than a fixed px value. Fixed px (e.g. 10px)
+       overrides a user's browser-level default text-size preference
+       entirely; 62.5% still resolves to 10px for the ~default case
+       (16px × 0.625 = 10px) but scales correctly for anyone who's
+       increased their default size — same math, better accessibility. */
+    font-size:62.5%;
   }
 
   *{box-sizing:border-box;}
@@ -28,12 +34,9 @@
     background:var(--bg);
     color:var(--ink);
     font-family: 'Archivo', Arial, Helvetica, sans-serif;
+    font-size:1.6rem;
     -webkit-font-smoothing:antialiased;
-    padding: 0;
-    font-weight: 280;
-    font-stretch: 102%;
-    font-size: 1.7rem;
-    line-height: 2.6rem;
+    padding:2.8rem 2.4rem 4.8rem;
   }
 
   .wrap{max-width:1100px;margin:0 auto;}
@@ -43,26 +46,16 @@
     align-items:baseline;
     justify-content:space-between;
     flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:20px;
-    border-bottom:3px solid var(--accent);
-    padding-bottom:14px;
+    gap:0.8rem;
+    margin-bottom:2rem;
+    border-bottom:0.3rem solid var(--accent);
+    padding-bottom:1.4rem;
   }
   h1{
     font-family: 'Archivo', Arial, Helvetica, sans-serif;
     font-weight:720;
     font-size:2.5rem;
-    line-height: 2.9rem;
-    font-stretch: 82%;
-    color:var(--ink-soft);
-    margin:0;
-  }
-  h3 {
-    font-family: 'Archivo', Arial, Helvetica, sans-serif;
-    font-weight:720;
-    font-size:2.5rem;
-    line-height: 2.9rem;
-    font-stretch: 82%;
+    line-height:1.16; /* unitless — scales cleanly if font-size ever changes */
     color:var(--ink-soft);
     margin:0;
   }
@@ -79,8 +72,8 @@
     background:#0d0d10;
     border-radius:var(--radius);
     overflow:hidden;
-    margin-bottom:28px;
-    box-shadow:0 1px 2px rgba(0,0,0,0.08);
+    margin-bottom:2.8rem;
+    box-shadow:0 0.1rem 0.2rem rgba(0,0,0,0.08);
   }
   .player-shell iframe{
     position:absolute; inset:0; width:100%; height:100%; border:0;
@@ -88,17 +81,17 @@
   .now-playing-label{
     display:flex;
     align-items:center;
-    gap:8px;
-    font-size:12px;
+    gap:0.8rem;
+    font-size:1.2rem;
     font-weight:700;
     letter-spacing:0.06em;
     text-transform:uppercase;
     color:var(--accent-dark);
-    margin:0 0 10px;
+    margin:0 0 1rem;
     line-height:1.2; /* SFU subhead linespacing: 120% of font size */
   }
   .now-playing-label .dot{
-    width:7px;height:7px;border-radius:50%;
+    width:0.7rem;height:0.7rem;border-radius:50%;
     background:var(--accent-dark);
     animation:pulse 1.8s ease-in-out infinite;
   }
@@ -109,16 +102,16 @@
   .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(240px,1fr));
-    gap:16px;
+    gap:1.6rem;
   }
 
   /* Fixed 3-column variant — for pages that always show exactly 3 items
-     (latest-videos-styled.html). Falls back to 1 column on narrow screens. */
+     (latest-videos-styled.html). Falls back to 1 column on narrow screens.
+     Breakpoint stays in px — media query units aren't affected by the
+     page's own root font-size, so px is the simplest, most predictable
+     choice here. */
   .grid-3{
     grid-template-columns:repeat(3, 1fr);
-  }
-  .grid-1{
-    grid-template-columns:1fr;
   }
   @media (max-width:720px){
     .grid-3{ grid-template-columns:1fr; }
@@ -126,7 +119,7 @@
 
   .card{
     background:var(--card);
-    border: 0.3rem solid var(--border);
+    border:0.1rem solid var(--border);
     border-radius:var(--radius);
     overflow:hidden;
     cursor:pointer;
@@ -134,12 +127,10 @@
     padding:0;
     font-family:inherit;
     color:inherit;
-    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    transition:border-color .15s ease;
   }
   .card:hover, .card:focus-visible{
-    /* transform:translateY(-2px); */
     border-color:var(--accent);
-    /* box-shadow:0 8px 20px rgba(204,6,51,0.14); */
     outline:none;
   }
   .card.active{
@@ -163,14 +154,14 @@
   }
   .index-badge{
     position:absolute;
-    top:8px; left:8px;
+    top:0.8rem; left:0.8rem;
     background:var(--accent);
     color:#fff;
-    font-size:11px;
+    font-size:1.1rem;
     font-weight:700;
     letter-spacing:0.04em;
-    padding:3px 7px;
-    border-radius:3px;
+    padding:0.3rem 0.7rem;
+    border-radius:var(--radius);
     font-variant-numeric: tabular-nums;
   }
   .play-glyph{
@@ -181,26 +172,53 @@
     background:rgba(15,15,18,0.25);
   }
   .card:hover .play-glyph, .card:focus-visible .play-glyph{opacity:1;}
-  .play-glyph svg{width:36px;height:36px;}
+  .play-glyph svg{width:3.6rem;height:3.6rem;}
 
-  .meta{
-    padding:12px 14px 14px;
-    display: flex;
-    flex-flow: column;
-    row-gap: 1rem;
+  .meta{padding:1.2rem 1.4rem 1.4rem;}
+
+  /* Card / video-item title. This targets h3.title specifically (not a
+     bare h3 selector) so it can't accidentally catch some other h3 that
+     shows up on the page later. */
+  h3.title{
+    font-family: 'Archivo', Arial, Helvetica, sans-serif;
+    font-weight:500;
+    font-size:1.4rem;
+    line-height:1.5; /* SFU body linespacing: 150% of font size */
+    color:var(--ink);
+    margin:0 0 0.6rem;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+
+  /* Alternative title treatment — a bolded paragraph matching body
+     text (same family/size as body's 1.6rem) instead of the h3
+     heading scale. Selected per-embed via data-title-style="bold"
+     (see iframe.js) / ?titleStyle=bold. */
+  .title-bold{
+    font-family: 'Archivo', Arial, Helvetica, sans-serif;
+    font-weight:690;
+    font-size:1.6rem;
+    line-height:1.5;
+    color:var(--ink);
+    margin:0 0 0.6rem;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
   }
 
   .date{
-    font-size:1.7rem;
+    font-size:1.2rem;
     color:var(--ink-soft);
-    margin: 0;
   }
 
   .status{
-    padding:40px 20px;
+    padding:4rem 2rem;
     text-align:center;
     color:var(--ink-soft);
-    /* font-size:14px; */
+    font-size:1.4rem;
   }
   .status.error{color:var(--accent-dark);}
 
@@ -212,7 +230,7 @@
   .trio-grid{
     display:grid;
     grid-template-columns:repeat(3, 1fr);
-    gap:24px;
+    gap:2.4rem;
   }
   @media (max-width:720px){
     .trio-grid{ grid-template-columns:1fr; }
@@ -225,12 +243,33 @@
     border-radius:var(--radius);
     overflow:hidden;
     background:#0d0d10;
-    margin-bottom:10px;
+    margin-bottom:1rem;
   }
   .video-item .frame-shell iframe{
     position:absolute; inset:0; width:100%; height:100%; border:0;
   }
-  .video-item .title{ margin-top:0; }
+
+  /* ============================================================
+     Global text treatment — condenses all type slightly.
+     Deliberately scoped to the specific leaf text elements below,
+     NOT to a shared ancestor like body or .meta. Transforms compound
+     when applied to both a container and its own children (e.g. a
+     96%-scaled parent wrapping a 96%-scaled child renders at an
+     effective ~92%, not 96%) — targeting only the actual text-bearing
+     elements, none of which contains another element in this list,
+     avoids that entirely.
+     ============================================================ */
+  h1,
+  .count,
+  .now-playing-label,
+  h3.title,
+  .title-bold,
+  .date,
+  .status,
+  .index-badge{
+    transform: scaleX(96%);
+    transform-origin: left;
+  }
 
   @media (prefers-reduced-motion: reduce){
     .card, .play-glyph, .dot{transition:none; animation:none;}

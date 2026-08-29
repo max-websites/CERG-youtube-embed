@@ -1,4 +1,4 @@
-import { getFeedConfig, fetchVideos, fmtDate, escapeHtml } from './feed.js';
+import { getFeedConfig, fetchVideos, getTitleStyle, titleMarkup, fmtDate, escapeHtml } from './feed.js';
 
 // Used only if the URL doesn't specify ?playlist=/?max=
 const DEFAULTS = {
@@ -31,6 +31,7 @@ async function init() {
 
     grid.innerHTML = '';
     countEl.textContent = `${items.length} video${items.length === 1 ? '' : 's'}`;
+    const titleStyle = getTitleStyle();
 
     items.forEach((item, i) => {
       const s = item.snippet;
@@ -49,7 +50,7 @@ async function init() {
           </span>
         </div>
         <div class="meta">
-          <p class="title">${escapeHtml(s.title)}</p>
+          ${titleMarkup(escapeHtml(s.title), titleStyle)}
           <p class="date">${fmtDate(s.publishedAt)}</p>
         </div>
       `;
