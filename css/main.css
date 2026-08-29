@@ -66,6 +66,15 @@
     color:var(--ink-soft);
     margin:0;
   }
+
+  /* Alternative title treatment — a bolded paragraph matching body
+     text (same family/size as body's 1.6rem) instead of the h3
+     heading scale. Selected per-embed via data-title-style="bold"
+     (see iframe.js) / ?titleStyle=bold. */
+  .title-bold{
+    font-weight:690;
+  }
+
   .count{
     font-size:1.3rem;
     color:var(--ink-soft);
@@ -234,4 +243,9 @@
 
   @media (prefers-reduced-motion: reduce){
     .card, .play-glyph, .dot{transition:none; animation:none;}
+  }
+
+  h1, h2, h3, h4, h5, h6, p {
+    transform: scaleX(96%);
+    transform-origin: left;
   }
