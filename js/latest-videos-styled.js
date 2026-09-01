@@ -50,7 +50,7 @@ function renderCard(item, titleStyle) {
     </div>
   `;
 
-  const thumbWrap = card.querySelector('.card');
+  const thumbWrap = card.querySelector('.thumb-wrap');
   const play = () => embedIframe(thumbWrap, videoId, s.title);
   thumbWrap.addEventListener('click', play, { once: true });
   thumbWrap.addEventListener('keydown', (e) => {
