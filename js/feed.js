@@ -62,17 +62,17 @@ export function extractVideoId(input) {
   return null;
 }
 
-/** Extracts a YouTube playlist ID from a full URL (e.g. playlist,
- *  watch URLs containing a playlist, or other common YouTube formats),
- *  or returns the input unchanged if it already looks like a bare
- *  playlist ID. Returns null if nothing usable was found. */
+/** Extracts a YouTube playlist ID from a full playlist URL,
+ *  or returns the input unchanged if it already looks like
+ *  a bare playlist ID. Returns null if nothing usable was found. */
 export function extractPlaylistId(input) {
   if (!input) return null;
   const str = input.trim();
 
-  const match = str.match(
-    /(?:youtube\.com\/(?:playlist\?list=|watch\?.*?[&?]list=)|youtube-nocookie\.com\/.*?[?&]list=|youtu\.be\/.*?[?&]list=)([\w-]+)/
-  );
+  // Full YouTube playlist URL:
+  // https://www.youtube.com/playlist?list=PLxxxx
+  // https://www.youtube.com/watch?v=...&list=PLxxxx
+  const match = str.match(/[?&]list=([\w-]+)/);
   if (match) return match[1];
 
   // Already looks like a bare playlist ID
@@ -95,18 +95,18 @@ export function getRequestedVideoIds() {
   return raw.split(',').map(extractVideoId).filter(Boolean);
 }
 
-/** Reads ?playlist= directly, with no default fallback — returns
- *  null if it genuinely wasn't in the URL. Use this (not
- *  getFeedConfig) when you need to know whether a playlist was
- *  EXPLICITLY requested, as opposed to a page default having kicked
- *  in — e.g. to decide whether to show anything at all. */
+
+/** Reads a single ?playlist= param containing either a full
+ *  YouTube playlist URL or a bare playlist ID.
+ *  Returns null if no usable playlist was explicitly requested. */
 export function getRequestedPlaylistId() {
   const params = new URLSearchParams(window.location.search);
-  const playlist = params.get('playlist');
+  const raw = params.get('playlist');
 
-  return playlist ? extractPlaylistId(playlist) : null;
+  if (!raw) return null;
+
+  return extractPlaylistId(raw);
 }
-
 
 /** Fetches specific videos by ID (not tied to any playlist), through
  *  the /api/videos-by-id proxy. Normalizes the response into the same
