@@ -57,7 +57,12 @@
     var maxVideos = (iframe.dataset.maxVideos || '').trim();
     var titleStyle = (iframe.dataset.titleStyle || '').trim();
 
-    console.log('[iframe.js] Read from element —', { videos: videos, playlist: playlist, maxVideos: maxVideos, titleStyle: titleStyle });
+    console.log('[iframe.js] Read from element —', {
+      videos: videos,
+      playlist: playlist,
+      maxVideos: maxVideos,
+      titleStyle: titleStyle
+    });
 
     var params = new URLSearchParams();
 
@@ -65,10 +70,17 @@
       // Specific videos always wins over playlist — same precedence
       // as the destination page's own ?videos= vs ?playlist=.
       params.set('videos', videos);
+
     } else if (playlist) {
-      params.set('playlist', playlist);
+      // Accept either a full YouTube playlist URL or a bare playlist ID.
+      var match = playlist.match(/[?&]list=([\w-]+)/);
+      var playlistId = match ? match[1] : playlist;
+
+      params.set('playlist', playlistId);
+
       if (maxVideos) params.set('max', maxVideos);
     }
+
     // If neither is set, no query string is added — the destination
     // page falls back to its own built-in defaults.
 
@@ -76,6 +88,7 @@
 
     var query = params.toString();
     var finalUrl = query ? baseUrl + '?' + query : baseUrl;
+
     console.log('[iframe.js] Built URL:', finalUrl);
     return finalUrl;
   }
