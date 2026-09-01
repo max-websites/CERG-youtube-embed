@@ -5,11 +5,11 @@ import {
   fmtDate, escapeHtml,
 } from './feed.js';
 
-// Used only when no ?videos= param is present and the URL doesn't
-// specify ?playlist=/?max= either.
+// Only used when a playlist IS given but ?max= isn't — there's no
+// default playlist anymore, so "nothing configured" means nothing
+// shown, not a fallback channel.
 const DEFAULTS = {
-  playlistId: 'UURAuV8XqQM0MD3VK_Pi32AA',
-  maxResults: 3,
+  maxResults: 2,
 };
 
 const grid = document.getElementById('grid');
@@ -33,8 +33,11 @@ function renderCard(item, titleStyle) {
 
   const card = document.createElement('div');
   card.className = 'card';
+  card.role = 'button';
+  card.tabIndex = 0;
+  card.ariaLabel = `Play ${escapeHtml(s.title)}`;
   card.innerHTML = `
-    <div class="thumb-wrap" role="button" tabindex="0" aria-label="Play ${escapeHtml(s.title)}">
+    <div class="thumb-wrap">
       <img src="${thumb}" alt="" loading="lazy">
       <span class="play-glyph">
         <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
@@ -46,7 +49,7 @@ function renderCard(item, titleStyle) {
     </div>
   `;
 
-  const thumbWrap = card.querySelector('.thumb-wrap');
+  const thumbWrap = card.querySelector('.card');
   const play = () => embedIframe(thumbWrap, videoId, s.title);
   thumbWrap.addEventListener('click', play, { once: true });
   thumbWrap.addEventListener('keydown', (e) => {
@@ -57,13 +60,19 @@ function renderCard(item, titleStyle) {
 }
 
 async function init() {
-  try {
-    // ?videos=... (comma-separated) always wins over playlist mode when
-    // present. Examples:
-    //   latest-videos-styled.html?videos=https://youtu.be/dQw4w9WgXcQ
-    //   latest-videos-styled.html?videos=https://youtu.be/aaa,https://youtu.be/bbb,dQw4w9WgXcQ
-    const requestedIds = getRequestedVideoIds();
+  const requestedIds = getRequestedVideoIds();
+  const requestedPlaylist = getRequestedPlaylistId();
 
+  // Nothing configured at all — leave the iframe completely blank,
+  // not even a status message.
+  if (requestedIds.length === 0 && !requestedPlaylist) {
+    grid.innerHTML = '';
+    return;
+  }
+
+  grid.innerHTML = '<p class="status">Loading videos\u2026</p>';
+
+  try {
     const items = requestedIds.length > 0
       ? await fetchVideosByIds(requestedIds)
       : await fetchVideos(getFeedConfig(DEFAULTS));

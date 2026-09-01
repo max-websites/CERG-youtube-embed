@@ -75,6 +75,16 @@ export function getRequestedVideoIds() {
   return raw.split(',').map(extractVideoId).filter(Boolean);
 }
 
+/** Reads ?playlist= directly, with no default fallback — returns
+ *  null if it genuinely wasn't in the URL. Use this (not
+ *  getFeedConfig) when you need to know whether a playlist was
+ *  EXPLICITLY requested, as opposed to a page default having kicked
+ *  in — e.g. to decide whether to show anything at all. */
+export function getRequestedPlaylistId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('playlist');
+}
+
 /** Fetches specific videos by ID (not tied to any playlist), through
  *  the /api/videos-by-id proxy. Normalizes the response into the same
  *  shape fetchVideos() returns (snippet.resourceId.videoId), so

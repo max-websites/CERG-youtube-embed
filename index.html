@@ -3,37 +3,198 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Latest Videos</title>
+<title>CERG YouTube Feed — Project Overview</title>
 <link rel="stylesheet" href="css/main.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet"></head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@420,720&display=swap">
+<style>
+  /* Documentation-only styles, scoped under .readme so nothing here
+     touches css/main.css or leaks onto the feed pages. Reuses the
+     shared brand tokens (--ink, --ink-soft, --accent, --border,
+     --radius, --accent-soft) already defined there. */
+  .readme{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+  .readme h1{
+    font-family: 'Archivo', Arial, Helvetica, sans-serif;
+    font-weight: 720;
+    font-size: 2.6rem;
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+  .readme .tagline{
+    color: var(--ink-soft);
+    font-size: 1.5rem;
+    margin: 0 0 32px;
+    padding-bottom: 24px;
+    border-bottom: 3px solid var(--accent);
+  }
+  .readme h2{
+    font-family: 'Archivo', Arial, Helvetica, sans-serif;
+    font-weight: 690;
+    font-size: 1.9rem;
+    color: var(--ink);
+    margin: 48px 0 12px;
+  }
+  .readme h3{
+    font-family: 'Archivo', Arial, Helvetica, sans-serif;
+    font-weight: 690;
+    font-size: 1.5rem;
+    color: var(--ink);
+    margin: 24px 0 8px;
+  }
+  .readme p, .readme li{
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .readme ul, .readme ol{
+    padding-left: 20px;
+  }
+  .readme li{
+    margin-bottom: 6px;
+  }
+  .readme a{
+    color: var(--accent-dark);
+  }
+  .readme code{
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.9em;
+    background: var(--accent-soft);
+    padding: 2px 5px;
+    border-radius: var(--radius);
+  }
+  .readme pre{
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    overflow-x: auto;
+    margin: 12px 0 20px;
+  }
+  .readme pre code{
+    background: none;
+    padding: 0;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .readme table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px;
+    font-size: 1.4rem;
+  }
+  .readme th, .readme td{
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .readme th{
+    color: var(--ink-soft);
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .readme .file-tree{
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 1.3rem;
+    line-height: 1.7;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .readme .note{
+    border-left: 3px solid var(--accent);
+    padding: 4px 14px;
+    margin: 16px 0;
+    font-size: 1.4rem;
+    color: var(--ink);
+  }
+</style>
+</head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Latest videos</h1>
-      <span class="count" id="count"></span>
-    </header>
+  <div class="readme">
+    <h1>CERG YouTube Feed</h1>
+    <p class="tagline">A self-hosted YouTube video feed, built to work inside an AEM instance that only allows iframe embeds.</p>
 
-    <p class="now-playing-label"><span class="dot"></span>Now playing</p>
-    <div class="player-shell">
-      <iframe id="player"
-        src=""
-        title="Video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        width="560"
-        height="315"
-        frameborder="0"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen>
-      </iframe>
-    </div>
+    <p>This project is a small static site (hosted on Cloudflare Pages) that renders a YouTube video feed and is designed to be dropped into that one iframe, configured entirely through the iframe's own attributes. SFU's AEM External Video component is lacking. So, I decided to create this solution. The AEM setup only needs embedding an <code>&lt;iframe&gt;</code> and hosting one JS file.</p>
 
-    <div class="grid" id="grid">
-      <div class="status" id="status">Loading videos…</div>
-    </div>
+    <h2>Pages</h2>
+    <p>One feed layout, with potential to create more in the future:</p>
+    <ul>
+      <li><a href="latest-videos-styled.html"><code>latest-videos-styled.html</code></a> — SFU-branded thumbnail cards; clicking a card swaps its thumbnail for a live embed in place.</li>
+    </ul>
+    <p>If no playlist or videos are configured, the iframe renders completely blank — no placeholder text.</p>
+
+    <h2>Configuring what shows</h2>
+    <p>Both pages read their content from URL query parameters:</p>
+    <table>
+      <tr><th>Param</th><th>What it does</th></tr>
+      <tr><td><code>playlist</code></td><td>A YouTube playlist ID (e.g. the channel's uploads playlist). Shows the latest videos from it.</td></tr>
+      <tr><td><code>max</code></td><td>How many videos to show from the playlist. Defaults to 2.</td></tr>
+      <tr><td><code>videos</code></td><td>A comma-separated list of specific YouTube URLs (or bare video IDs) to show instead of a playlist. Always overrides <code>playlist</code>/<code>max</code> when present.</td></tr>
+      <tr><td><code>titleStyle</code></td><td>Set to <code>regular</code> to render titles as a bolded paragraph matching the body font, instead of the default h3 heading.</td></tr>
+    </table>
+
+    <h3>Examples</h3>
+    <pre><code>latest-videos.html?playlist=UUxxxxxxxxxxxxxxxxxxxxxx&amp;max=6
+latest-videos-styled.html?videos=https://youtu.be/dQw4w9WgXcQ,https://youtu.be/xvFZjo5PgG0
+latest-videos-styled.html?playlist=UUxxxx&amp;titleStyle=bold</code></pre>
+
+    <p class="note">A YouTube channel's "uploads" playlist ID is its channel ID with the <code>UC</code> prefix swapped for <code>UU</code>.</p>
+
+    <h2>Embedding in AEM</h2>
+    <p>Rather than hand-building that query string inside AEM, embeds use plain <code>data-*</code> attributes — a shared loader script reads them and builds the URL (with correct escaping) automatically:</p>
+    <pre><code>&lt;script src="https://www.sfu.ca/content/dam/sfu/politics/CERG/code/js/iframe.js"&gt;&lt;/script&gt;
+&lt;iframe class="sfu-video-embed"
+  src="https://cerg-youtube-feed.pages.dev/latest-videos-styled"
+  data-videos=""
+  data-playlist=""
+  data-max-videos=""
+  data-title-style=""
+  title="CERG Youtube Feed" width="100%" height="800px" frameborder="no"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  style="border-style: none; overflow: hidden; transition: height 0.2s ease;"&gt;
+&lt;/iframe&gt;</code></pre>
+    <p>Fill in whichever <code>data-*</code> attribute matches what you want to show and leave the rest empty — leaving all of them empty shows nothing. The iframe also auto-resizes to fit its content height via <code>postMessage</code>, handled by that same script.</p>
+
+    <h2>How it works</h2>
+    <ul>
+      <li>Hosted on <strong>Cloudflare Pages</strong> as a static site.</li>
+      <li>A <strong>Cloudflare Worker</strong> (<code>_worker.js</code>) proxies requests to the YouTube Data API v3, so the API key never reaches the browser. Two routes: <code>/api/videos</code> (playlist-based) and <code>/api/videos-by-id</code> (specific videos, used by <code>?videos=</code>).</li>
+      <li>Requires a <code>YOUTUBE_API_KEY</code> secret, set in Cloudflare Pages → Settings → Variables and Secrets.</li>
+    </ul>
+
+    <h2>Project files</h2>
+    <div class="file-tree">index.html                    this page
+latest-videos-styled.html     card layout
+_worker.js                    YouTube API proxy (Cloudflare Worker)
+css/
+  main.css                    shared styles for both feed pages
+js/
+  feed.js                     shared data-fetching + config utilities
+  latest-videos-styled.js     page script for latest-videos-styled.html
+  auto-resize.js              reports page height to the parent AEM iframe
+parent-browsing-context/
+  iframe.js                   helper to build embed URLs</div>
+    <p class="note"><code>iframe.js</code> — the AEM-side loader that builds each embed's URL from its <code>data-*</code> attributes and handles the resize listener — is hosted separately on SFU's own CDN, not in this repo.</p>
+
+    <h2>Setting this up from scratch</h2>
+    <ol>
+      <li>Get a free YouTube Data API v3 key from the <a href="https://console.cloud.google.com">Google Cloud Console</a> (enable "YouTube Data API v3" on a project, then create an API key).</li>
+      <li>Deploy this repo to Cloudflare Pages.</li>
+      <li>In Pages → Settings → Variables and Secrets, add <code>YOUTUBE_API_KEY</code> with that key.</li>
+      <li>Host <code>iframe.js</code> somewhere AEM can load it from, and embed the iframe snippet above wherever the feed is needed.</li>
+    </ol>
   </div>
-  <script type="module" src="js/index.js"></script>
-  <script src="js/auto-resize.js"></script>
 </body>
 </html>
