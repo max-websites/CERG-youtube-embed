@@ -52,8 +52,8 @@ function renderCard(item, titleStyle) {
 
   const thumbWrap = card.querySelector('.thumb-wrap');
   const play = () => embedIframe(thumbWrap, videoId, s.title);
-  thumbWrap.addEventListener('click', play, { once: true });
-  thumbWrap.addEventListener('keydown', (e) => {
+  card.addEventListener('click', play, { once: true });
+  card.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(); }
   }, { once: true });
 

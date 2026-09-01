@@ -62,6 +62,26 @@ export function extractVideoId(input) {
   return null;
 }
 
+/** Extracts a YouTube playlist ID from a full URL (e.g. playlist,
+ *  watch URLs containing a playlist, or other common YouTube formats),
+ *  or returns the input unchanged if it already looks like a bare
+ *  playlist ID. Returns null if nothing usable was found. */
+export function extractPlaylistId(input) {
+  if (!input) return null;
+  const str = input.trim();
+
+  const match = str.match(
+    /(?:youtube\.com\/(?:playlist\?list=|watch\?.*?[&?]list=)|youtube-nocookie\.com\/.*?[?&]list=|youtu\.be\/.*?[?&]list=)([\w-]+)/
+  );
+  if (match) return match[1];
+
+  // Already looks like a bare playlist ID
+  if (/^[\w-]+$/.test(str)) return str;
+
+  return null;
+}
+
+
 /** Reads a single ?videos= param — a comma-separated list of full
  *  YouTube URLs and/or bare video IDs:
  *    ?videos=https://youtu.be/dQw4w9WgXcQ,https://youtu.be/xyz,abc12345678
@@ -82,8 +102,11 @@ export function getRequestedVideoIds() {
  *  in — e.g. to decide whether to show anything at all. */
 export function getRequestedPlaylistId() {
   const params = new URLSearchParams(window.location.search);
-  return params.get('playlist');
+  const playlist = params.get('playlist');
+
+  return playlist ? extractPlaylistId(playlist) : null;
 }
+
 
 /** Fetches specific videos by ID (not tied to any playlist), through
  *  the /api/videos-by-id proxy. Normalizes the response into the same
