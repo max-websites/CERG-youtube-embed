@@ -3,6 +3,7 @@ import {
   getRequestedVideoIds, fetchVideosByIds,
   getTitleStyle, titleMarkup,
   fmtDate, escapeHtml,
+  getRequestedPlaylistId,
 } from './feed.js';
 
 // Only used when a playlist IS given but ?max= isn't — there's no
